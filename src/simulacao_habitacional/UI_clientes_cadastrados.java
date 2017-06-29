@@ -49,18 +49,22 @@ public class UI_clientes_cadastrados extends javax.swing.JFrame {
 
         jLabel1.setText("Clientes Cadastrados:");
 
-        System.out.println("1");
         Connection c = null;
         Statement stmt = null;
         try{
-            System.out.println("2");
+            //Conecta ao BD
             c = DriverManager.getConnection("jdbc:h2://C:\\Users\\Douglas\\Desktop\\Banco de dados\\Simulacao Habitacional","","");
             stmt = c.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
                 ResultSet.CONCUR_READ_ONLY);
+
+            //Colhe os dados do BD
             ResultSet rs = stmt.executeQuery( "SELECT * FROM Cliente;" );
+
+            //Número de linhas encontradas
             int rows = 0;
             while(rs.next()){rows++;}
-            System.out.println("3");
+
+            //cria uma matriz de dados para a tabela
             Object[][] obj = new Object[rows][4];
             rs.first();
             for(int i=0; i<rows;i++){
@@ -70,7 +74,8 @@ public class UI_clientes_cadastrados extends javax.swing.JFrame {
 
                 }            rs.next();
             }
-            System.out.println("5");
+
+            //Modelo da tabela com os dados da matriz
             jTable1.setModel(new javax.swing.table.DefaultTableModel(
                 obj,
                 new String [] {
@@ -80,14 +85,21 @@ public class UI_clientes_cadastrados extends javax.swing.JFrame {
                 Class[] types = new Class [] {
                     java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.Float.class
                 };
-
+                public boolean isCellEditable(int row, int col)
+                { return false; }
                 public Class getColumnClass(int columnIndex) {
                     return types [columnIndex];
                 }
             });
+            //pega erros de execução
         }catch ( Exception e ) {
             System.err.println( e.getClass().getName()+": "+ e.getMessage() );
-            System.exit(0);
+            if(e.getMessage().contains("Database may be already in use")){
+                UI_aviso aviso = new UI_aviso();
+                aviso.setVisible(true);
+                this.getOwner().dispose();
+
+            }
         }
         jTable1.addAncestorListener(new javax.swing.event.AncestorListener() {
             public void ancestorMoved(javax.swing.event.AncestorEvent evt) {
@@ -107,6 +119,7 @@ public class UI_clientes_cadastrados extends javax.swing.JFrame {
         }
 
         jButton1.setText("Excluir");
+        jButton1.setToolTipText("Excluir cadastro selecionado");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
@@ -143,6 +156,7 @@ public class UI_clientes_cadastrados extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -150,13 +164,12 @@ public class UI_clientes_cadastrados extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jButton1)
-                        .addGap(18, 18, 18)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton2)))
                 .addContainerGap())
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jButton1, jButton2});
@@ -166,13 +179,13 @@ public class UI_clientes_cadastrados extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 201, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2))
-                .addGap(4, 4, 4)
+                    .addComponent(jButton2)
+                    .addComponent(jButton1))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
@@ -189,13 +202,11 @@ public class UI_clientes_cadastrados extends javax.swing.JFrame {
                 Statement stmt = c.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
                         ResultSet.CONCUR_READ_ONLY);
                 stmt.executeUpdate( "DELETE FROM Cliente WHERE "
-                        + "CPF="+jTable1.getValueAt(jTable1.getSelectedRow(),0)+";"
+                        + "CPF='"+jTable1.getValueAt(jTable1.getSelectedRow(),0)+"';"
                         );              
-                System.out.println("2");
                 ResultSet rs = stmt.executeQuery( "SELECT * FROM Cliente;" );
                 int rows = 0;
                 while(rs.next()){rows++;}
-                System.out.println("3");
                 Object[][] obj = new Object[rows][4];
                 rs.first();
                 for(int i=0; i<rows;i++){
@@ -216,6 +227,8 @@ public class UI_clientes_cadastrados extends javax.swing.JFrame {
                     Class[] types = new Class [] {
                         java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.Float.class
                     };
+                    public boolean isCellEditable(int row, int col)
+                        { return false; }
 
                     public Class getColumnClass(int columnIndex) {
                         return types [columnIndex];
@@ -224,7 +237,10 @@ public class UI_clientes_cadastrados extends javax.swing.JFrame {
 
                 jLabel2.setText("Excluído com sucesso.");
             }catch (SQLException ex) {
-                Logger.getLogger(Simulacao_habitacional.class.getName()).log(Level.SEVERE, null, ex);
+               // Logger.getLogger(Simulacao_habitacional.class.getName()).log(Level.SEVERE, null, ex);
+                if(ex.getMessage().toString().contains("Referential integrity constraint violation")){
+                    jLabel2.setText("Exclua o histórico do cliente antes de excluí-lo.");
+                }else
                 jLabel2.setText("Erro ao accessar o Banco de Dados.");
             }
         

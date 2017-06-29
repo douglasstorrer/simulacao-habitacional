@@ -5,10 +5,18 @@
  */
 package simulacao_habitacional;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.DefaultCellEditor;
+import javax.swing.JComboBox;
+import javax.swing.table.TableColumn;
 
 /**
  *
@@ -36,93 +44,243 @@ public class UI_lista_simulacoes extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
+        jPanel1 = new javax.swing.JPanel();
+        jLabel2 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Histórico de Simulações");
 
         jLabel1.setText("Simulações Realizadas:");
 
-        System.out.println("1");
+        cell_editor editor_celulas = new cell_editor(jTable1);
         try{
-            System.out.println("2");
+            //conecta com o BD
             Connection c = DriverManager.getConnection("jdbc:h2://C:\\Users\\Douglas\\Desktop\\Banco de dados\\Simulacao Habitacional","","");
             Statement stmt = c.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
                 ResultSet.CONCUR_READ_ONLY);
             ResultSet rs = stmt.executeQuery( "SELECT * FROM Financiamento;" );
+
+            //conta linhas
             int rows = 0;
             while(rs.next()){rows++;}
-            System.out.println("3");
-            Object[][] obj = new Object[rows][7];
+
+            //preenche a tabela com os valores do resultset
+            Object[][] obj = new Object[rows][8];
             rs.first();
             for(int i=0; i<rows;i++){
-                for (int j=1; j<=7;j++){
+                for (int j=1; j<=8;j++){
                     System.out.println(rs.getObject(j).toString());
                     obj[i][j-1]=rs.getObject(j);
 
                 }            rs.next();
             }
-            System.out.println("5");
-            jTable1.setModel(new javax.swing.table.DefaultTableModel(
+
+            //modelo da tabela
+            rs.first();
+            javax.swing.table.DefaultTableModel modelo = new javax.swing.table.DefaultTableModel(
                 obj,
                 new String [] {
-                    "Nome", "ID_Móvel", "Juros", "Parcela","Entrada","Subsídio","Status"
+                    "Nome", "ID_Móvel","Nº de parcelas", "Juros", "Parcela","Entrada","Subsídio","Status"
                 }
             ) {
                 Class[] types = new Class [] {
-                    java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.Float.class
+                    java.lang.String.class, java.lang.String.class,java.lang.Integer.class, java.lang.Double.class, java.lang.Double.class,java.lang.Double.class,java.lang.Double.class,java.lang.String.class
                 };
-
-                /*public Class getColumnClass(int columnIndex) {
+                public boolean isCellEditable(int row, int col)
+                {   if(obj[row][col].toString().equals("SIMULAÇÃO")){return true; }else
+                    return false; }
+                public Class getColumnClass(int columnIndex) {
                     return types [columnIndex];
-                }*/
-            });
-        }catch ( Exception e ) {
-            System.err.println( e.getClass().getName()+": "+ e.getMessage() );
-            System.exit(0);
-        }
-        jScrollPane1.setViewportView(jTable1);
+                }
+            };
+            jTable1.setModel(modelo);
+            //torna os itens SIMULACAO da ultima coluna editaveis
+            //cria editor de celulas
+            JComboBox selecao = new JComboBox();
+            selecao.addItem("ACEITO");
+            selecao.addItem("NAO_ACEITO");
+            selecao.addItem("SIMULAÇÃO");
 
-        jButton1.setText("Ok");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+            //muda os valores da tabela de acordo com a selecao do combobox
+            selecao.addActionListener (new ActionListener () {
+                public void actionPerformed(ActionEvent e) {
+                    //mudar para aceito
+                    if(selecao.getSelectedItem().toString().equals("ACEITO")){
+                        try{stmt.executeUpdate("UPDATE Financiamento SET Status ='ACEITO' WHERE "
+                            + "Nome_cliente ='"+jTable1.getValueAt(jTable1.getSelectedRow(),0)
+                            + "' and ID_imovel='"+jTable1.getValueAt(jTable1.getSelectedRow(),1)
+                            + "' and num_parcelas='"+jTable1.getValueAt(jTable1.getSelectedRow(),2)
+                            +"' AND Status='SIMULAÇÃO';");
+                        System.out.println("UPDATE Financiamento SET Status ='ACEITO' WHERE Nome ='"
+                            +jTable1.getValueAt(jTable1.getSelectedRow(),0)+"' AND Status='SIMULAÇÃO';");
+                    }catch ( Exception exc ) {System.err.println( exc.getClass().getName()+": "+ exc.getMessage() );}
+                }else
+                //mudar para nao aceito
+                if(selecao.getSelectedItem().toString().equals("NAO_ACEITO")){
+                    try{stmt.executeUpdate("UPDATE Financiamento SET Status ='NAO_ACEITO' WHERE "
+                        + "Nome_cliente ='"+jTable1.getValueAt(jTable1.getSelectedRow(),0)
+                        + "' and ID_imovel='"+jTable1.getValueAt(jTable1.getSelectedRow(),1)
+                        + "' and num_parcelas='"+jTable1.getValueAt(jTable1.getSelectedRow(),2)
+                        +"' AND Status='SIMULAÇÃO';");
+                    System.out.println("UPDATE Financiamento SET Status ='NAO_ACEITO' WHERE Nome ='"
+                        +jTable1.getValueAt(jTable1.getSelectedRow(),0)+"' AND Status='SIMULAÇÃO';");
+                }catch ( Exception ey ) {System.err.println( ey.getClass().getName()+": "+ ey.getMessage() );}
             }
-        });
+        }
+    });
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 481, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap())
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton1)
-                .addContainerGap())
-        );
+    //percorre a tabela mudando o editor das celulas
+    rs.first();
+    for(int i=0; i<rows;i++){
+        if(rs.getObject(8).toString().equals("SIMULAÇÃO")){
+            editor_celulas.setEditorAt(i,new DefaultCellEditor(selecao));
+            jTable1.getColumn("Status").setCellEditor(editor_celulas);
+        }rs.next();
+    }
 
-        pack();
+    }catch ( Exception e ) {
+        System.err.println( e.getClass().getName()+": "+ e.getMessage() );
+        if(e.getMessage().contains("Database may be already in use")){
+            UI_aviso aviso = new UI_aviso();
+            aviso.setVisible(true);
+            this.getOwner().dispose();
+        }
+    }
+    jScrollPane1.setViewportView(jTable1);
+
+    jButton1.setText("Ok");
+    jButton1.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            jButton1ActionPerformed(evt);
+        }
+    });
+
+    jButton2.setText("Excluir");
+    jButton2.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            jButton2ActionPerformed(evt);
+        }
+    });
+
+    jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+    jLabel2.setText("Status");
+
+    javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+    jPanel1.setLayout(jPanel1Layout);
+    jPanel1Layout.setHorizontalGroup(
+        jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        .addGroup(jPanel1Layout.createSequentialGroup()
+            .addComponent(jLabel2)
+            .addGap(0, 0, Short.MAX_VALUE))
+    );
+    jPanel1Layout.setVerticalGroup(
+        jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+            .addGap(0, 0, Short.MAX_VALUE)
+            .addComponent(jLabel2))
+    );
+
+    javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+    getContentPane().setLayout(layout);
+    layout.setHorizontalGroup(
+        layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        .addGroup(layout.createSequentialGroup()
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(jLabel1)
+                            .addGap(0, 0, Short.MAX_VALUE))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 545, Short.MAX_VALUE)))
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addComponent(jButton2)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)))
+            .addContainerGap())
+        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+    );
+    layout.setVerticalGroup(
+        layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        .addGroup(layout.createSequentialGroup()
+            .addContainerGap()
+            .addComponent(jLabel1)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addComponent(jButton2)
+                .addComponent(jButton1))
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+    );
+
+    pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
+        this.dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        if(jTable1.getSelectedRow()>=0){
+            System.out.println(jTable1.getValueAt(jTable1.getSelectedRow(), jTable1.getSelectedColumn()));
+            try{
+                Connection c = DriverManager.getConnection("jdbc:h2://C:\\Users\\Douglas\\Desktop\\Banco de dados\\Simulacao Habitacional","","");
+                Statement stmt = c.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
+                        ResultSet.CONCUR_READ_ONLY);
+                stmt.executeUpdate( "DELETE FROM Financiamento WHERE "
+                        + "nome_cliente='"+jTable1.getValueAt(jTable1.getSelectedRow(),0)
+                        + "'and ID_imovel='"+jTable1.getValueAt(jTable1.getSelectedRow(),1)
+                        + "'and num_parcelas='"+jTable1.getValueAt(jTable1.getSelectedRow(),2)+"';"
+                        );              
+                System.out.println("2");
+                ResultSet rs = stmt.executeQuery( "SELECT * FROM Financiamento;" );
+                int rows = 0;
+                while(rs.next()){rows++;}
+                System.out.println("3");
+                Object[][] obj = new Object[rows][8];
+                rs.first();
+                for(int i=0; i<rows;i++){
+                    for (int j=1; j<=8;j++){
+                        System.out.println(rs.getObject(j).toString());
+                        obj[i][j-1]=rs.getObject(j);
+
+                    }            
+                    rs.next();
+                }
+                System.out.println("5");
+                jTable1.setModel(new javax.swing.table.DefaultTableModel(
+                    obj,
+                    new String [] {
+                        "Nome", "ID_Móvel","Nº de parcelas", "Juros", "Parcela","Entrada","Subsídio","Status"
+                    }
+                ) {
+                    Class[] types = new Class [] {
+                        java.lang.String.class, java.lang.String.class,java.lang.Integer.class, java.lang.Double.class, java.lang.Double.class,java.lang.Double.class,java.lang.Double.class,java.lang.String.class
+                    };
+                    public boolean isCellEditable(int row, int col)
+                        { return false; }
+
+                    public Class getColumnClass(int columnIndex) {
+                        return types [columnIndex];
+                    }
+                });
+
+                jLabel2.setText("Excluído com sucesso.");
+            }catch (SQLException ex) {
+                Logger.getLogger(Simulacao_habitacional.class.getName()).log(Level.SEVERE, null, ex);
+                if(ex.getMessage().toString().contains("Referential integrity constraint violation")){
+                    jLabel2.setText("Exclua o histórico do cliente antes de excluí-lo.");
+                }else
+                jLabel2.setText("Erro ao accessar o Banco de Dados.");
+            }
+        
+        }else {jLabel2.setText("Selecione um cadastro para Exluir.");}
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -161,7 +319,10 @@ public class UI_lista_simulacoes extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
     // End of variables declaration//GEN-END:variables

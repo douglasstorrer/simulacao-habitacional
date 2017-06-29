@@ -25,20 +25,27 @@
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" attributes="0">
-              <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="0" attributes="0">
-                      <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                  <Group type="102" attributes="0">
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="102" alignment="0" attributes="0">
+                              <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                          </Group>
+                          <Component id="jScrollPane1" alignment="1" pref="545" max="32767" attributes="0"/>
+                      </Group>
                   </Group>
-                  <Component id="jScrollPane1" alignment="1" pref="481" max="32767" attributes="0"/>
                   <Group type="102" alignment="1" attributes="0">
                       <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                      <Component id="jButton2" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                       <Component id="jButton1" min="-2" pref="70" max="-2" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
+          <Component id="jPanel1" max="32767" attributes="0"/>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
@@ -48,9 +55,13 @@
               <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jScrollPane1" min="-2" pref="275" max="-2" attributes="0"/>
-              <EmptySpace max="32767" attributes="0"/>
-              <Component id="jButton1" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="jButton2" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jButton1" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace max="32767" attributes="0"/>
+              <Component id="jPanel1" min="-2" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -70,8 +81,8 @@
       <SubComponents>
         <Component class="javax.swing.JTable" name="jTable1">
           <Properties>
-            <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor" postCode="}catch ( Exception e ) {&#xa;System.err.println( e.getClass().getName()+&quot;: &quot;+ e.getMessage() );&#xa;System.exit(0);&#xa;}">
-              <Connection code="new javax.swing.table.DefaultTableModel(&#xa;    obj,&#xa;    new String [] {&#xa;        &quot;Nome&quot;, &quot;ID_M&#xf3;vel&quot;, &quot;Juros&quot;, &quot;Parcela&quot;,&quot;Entrada&quot;,&quot;Subs&#xed;dio&quot;,&quot;Status&quot;&#xa;    }&#xa;) {&#xa;    Class[] types = new Class [] {&#xa;        java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.Float.class&#xa;    };&#xa;&#xa;    /*public Class getColumnClass(int columnIndex) {&#xa;        return types [columnIndex];&#xa;    }*/&#xa;}" type="code"/>
+            <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor" postCode="//torna os itens SIMULACAO da ultima coluna editaveis&#xa;//cria editor de celulas&#xa;JComboBox selecao = new JComboBox();&#xa;selecao.addItem(&quot;ACEITO&quot;);&#xa;selecao.addItem(&quot;NAO_ACEITO&quot;);&#xa;selecao.addItem(&quot;SIMULA&#xc7;&#xc3;O&quot;);&#xa;&#xa;//muda os valores da tabela de acordo com a selecao do combobox&#xa;selecao.addActionListener (new ActionListener () {&#xa;    public void actionPerformed(ActionEvent e) {&#xa;    //mudar para aceito &#xa;    if(selecao.getSelectedItem().toString().equals(&quot;ACEITO&quot;)){&#xa;        try{stmt.executeUpdate(&quot;UPDATE Financiamento SET Status =&apos;ACEITO&apos; WHERE &quot;&#xa;                                + &quot;Nome_cliente =&apos;&quot;+jTable1.getValueAt(jTable1.getSelectedRow(),0)&#xa;                                + &quot;&apos; and ID_imovel=&apos;&quot;+jTable1.getValueAt(jTable1.getSelectedRow(),1)&#xa;                                + &quot;&apos; and num_parcelas=&apos;&quot;+jTable1.getValueAt(jTable1.getSelectedRow(),2)&#xa;                                +&quot;&apos; AND Status=&apos;SIMULA&#xc7;&#xc3;O&apos;;&quot;);&#xa;                            System.out.println(&quot;UPDATE Financiamento SET Status =&apos;ACEITO&apos; WHERE Nome =&apos;&quot;&#xa;                            +jTable1.getValueAt(jTable1.getSelectedRow(),0)+&quot;&apos; AND Status=&apos;SIMULA&#xc7;&#xc3;O&apos;;&quot;);&#xa;                }catch ( Exception exc ) {System.err.println( exc.getClass().getName()+&quot;: &quot;+ exc.getMessage() );}&#xa;    }else &#xa;    //mudar para nao aceito&#xa;    if(selecao.getSelectedItem().toString().equals(&quot;NAO_ACEITO&quot;)){&#xa;            try{stmt.executeUpdate(&quot;UPDATE Financiamento SET Status =&apos;NAO_ACEITO&apos; WHERE &quot;&#xa;                                + &quot;Nome_cliente =&apos;&quot;+jTable1.getValueAt(jTable1.getSelectedRow(),0)&#xa;                                + &quot;&apos; and ID_imovel=&apos;&quot;+jTable1.getValueAt(jTable1.getSelectedRow(),1)&#xa;                                + &quot;&apos; and num_parcelas=&apos;&quot;+jTable1.getValueAt(jTable1.getSelectedRow(),2)&#xa;                                +&quot;&apos; AND Status=&apos;SIMULA&#xc7;&#xc3;O&apos;;&quot;);&#xa;                            System.out.println(&quot;UPDATE Financiamento SET Status =&apos;NAO_ACEITO&apos; WHERE Nome =&apos;&quot;&#xa;                            +jTable1.getValueAt(jTable1.getSelectedRow(),0)+&quot;&apos; AND Status=&apos;SIMULA&#xc7;&#xc3;O&apos;;&quot;);&#xa;                }catch ( Exception ey ) {System.err.println( ey.getClass().getName()+&quot;: &quot;+ ey.getMessage() );}&#xa;        }&#xa;    }&#xa;});&#xa;&#xa;//percorre a tabela mudando o editor das celulas&#xa;    rs.first();&#xa;    for(int i=0; i&lt;rows;i++){&#xa;            if(rs.getObject(8).toString().equals(&quot;SIMULA&#xc7;&#xc3;O&quot;)){&#xa;                 editor_celulas.setEditorAt(i,new DefaultCellEditor(selecao));&#xa;                 jTable1.getColumn(&quot;Status&quot;).setCellEditor(editor_celulas);&#xa;             }rs.next();&#xa;    }&#xa;&#xa;&#xa;}catch ( Exception e ) {&#xa;System.err.println( e.getClass().getName()+&quot;: &quot;+ e.getMessage() );&#xa;if(e.getMessage().contains(&quot;Database may be already in use&quot;)){&#xa;    UI_aviso aviso = new UI_aviso();&#xa;    aviso.setVisible(true);&#xa;    this.getOwner().dispose();&#xa;}&#xa;}">
+              <Connection code="modelo" type="code"/>
             </Property>
             <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
               <TableColumnModel selectionModel="0">
@@ -117,7 +128,7 @@
             </Property>
           </Properties>
           <AuxValues>
-            <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="System.out.println(&quot;1&quot;);&#xa;try{&#xa;System.out.println(&quot;2&quot;);&#xa;Connection c = DriverManager.getConnection(&quot;jdbc:h2://C:\\Users\\Douglas\\Desktop\\Banco de dados\\Simulacao Habitacional&quot;,&quot;&quot;,&quot;&quot;);&#xa;Statement stmt = c.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,&#xa;        ResultSet.CONCUR_READ_ONLY);&#xa;ResultSet rs = stmt.executeQuery( &quot;SELECT * FROM Financiamento;&quot; );&#xa;int rows = 0;&#xa;while(rs.next()){rows++;}&#xa;System.out.println(&quot;3&quot;);&#xa;Object[][] obj = new Object[rows][7];&#xa;rs.first();&#xa;    for(int i=0; i&lt;rows;i++){&#xa;        for (int j=1; j&lt;=7;j++){&#xa;            System.out.println(rs.getObject(j).toString());&#xa;            obj[i][j-1]=rs.getObject(j);&#xa;&#xa;        }            rs.next();&#xa;    }&#xa;System.out.println(&quot;5&quot;);"/>
+            <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="cell_editor editor_celulas = new cell_editor(jTable1);&#xa;try{&#xa;//conecta com o BD&#xa;Connection c = DriverManager.getConnection(&quot;jdbc:h2://C:\\Users\\Douglas\\Desktop\\Banco de dados\\Simulacao Habitacional&quot;,&quot;&quot;,&quot;&quot;);&#xa;Statement stmt = c.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,&#xa;        ResultSet.CONCUR_READ_ONLY);&#xa;ResultSet rs = stmt.executeQuery( &quot;SELECT * FROM Financiamento;&quot; );&#xa;&#xa;//conta linhas&#xa;int rows = 0;&#xa;while(rs.next()){rows++;}&#xa;&#xa;//preenche a tabela com os valores do resultset&#xa;Object[][] obj = new Object[rows][8];&#xa;rs.first();&#xa;    for(int i=0; i&lt;rows;i++){&#xa;        for (int j=1; j&lt;=8;j++){&#xa;            System.out.println(rs.getObject(j).toString());&#xa;            obj[i][j-1]=rs.getObject(j);&#xa;&#xa;        }            rs.next();&#xa;    }&#xa;&#xa;//modelo da tabela&#xa;rs.first();&#xa;javax.swing.table.DefaultTableModel modelo = new javax.swing.table.DefaultTableModel(&#xa;    obj,&#xa;    new String [] {&#xa;        &quot;Nome&quot;, &quot;ID_M&#xf3;vel&quot;,&quot;N&#xba; de parcelas&quot;, &quot;Juros&quot;, &quot;Parcela&quot;,&quot;Entrada&quot;,&quot;Subs&#xed;dio&quot;,&quot;Status&quot;&#xa;    }&#xa;) {&#xa;    Class[] types = new Class [] {&#xa;        java.lang.String.class, java.lang.String.class,java.lang.Integer.class, java.lang.Double.class, java.lang.Double.class,java.lang.Double.class,java.lang.Double.class,java.lang.String.class&#xa;    };&#xa;    public boolean isCellEditable(int row, int col)&#xa;        {   if(obj[row][col].toString().equals(&quot;SIMULA&#xc7;&#xc3;O&quot;)){return true; }else&#xa;            return false; }&#xa;    public Class getColumnClass(int columnIndex) {&#xa;        return types [columnIndex];&#xa;    }&#xa;};"/>
           </AuxValues>
         </Component>
       </SubComponents>
@@ -130,5 +141,48 @@
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton1ActionPerformed"/>
       </Events>
     </Component>
+    <Component class="javax.swing.JButton" name="jButton2">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Excluir"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton2ActionPerformed"/>
+      </Events>
+    </Component>
+    <Container class="javax.swing.JPanel" name="jPanel1">
+      <Properties>
+        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+          <Border info="org.netbeans.modules.form.compat2.border.EtchedBorderInfo">
+            <EtchetBorder/>
+          </Border>
+        </Property>
+      </Properties>
+
+      <Layout>
+        <DimensionLayout dim="0">
+          <Group type="103" groupAlignment="0" attributes="0">
+              <Group type="102" alignment="0" attributes="0">
+                  <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+              </Group>
+          </Group>
+        </DimensionLayout>
+        <DimensionLayout dim="1">
+          <Group type="103" groupAlignment="0" attributes="0">
+              <Group type="102" alignment="1" attributes="0">
+                  <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                  <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
+              </Group>
+          </Group>
+        </DimensionLayout>
+      </Layout>
+      <SubComponents>
+        <Component class="javax.swing.JLabel" name="jLabel2">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Status"/>
+          </Properties>
+        </Component>
+      </SubComponents>
+    </Container>
   </SubComponents>
 </Form>

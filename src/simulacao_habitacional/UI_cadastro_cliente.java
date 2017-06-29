@@ -85,6 +85,12 @@ public class UI_cadastro_cliente extends javax.swing.JFrame {
 
         jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
+        jTextField2.setToolTipText("Nome do Cliente");
+
+        jTextField3.setToolTipText("Máximo 3 dígitos");
+
+        jTextField4.setToolTipText("Usar ponto(.) e não vírgula(,).");
+
         jLabel1.setText("CPF");
 
         jLabel2.setText("Nome");
@@ -93,6 +99,7 @@ public class UI_cadastro_cliente extends javax.swing.JFrame {
 
         jLabel4.setText("Renda");
 
+        jTextField1.setToolTipText("Apenas Números");
         jTextField1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTextField1ActionPerformed(evt);
@@ -112,7 +119,7 @@ public class UI_cadastro_cliente extends javax.swing.JFrame {
                     .addComponent(jLabel4))
                 .addGap(13, 13, 13)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.DEFAULT_SIZE, 173, Short.MAX_VALUE)
+                    .addComponent(jTextField2)
                     .addComponent(jTextField1, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jTextField4)
                     .addComponent(jTextField3, javax.swing.GroupLayout.Alignment.TRAILING))
@@ -153,6 +160,7 @@ public class UI_cadastro_cliente extends javax.swing.JFrame {
         });
 
         jButton2.setText("Excluir");
+        jButton2.setToolTipText("Para excluir digite o CPF");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
@@ -194,19 +202,20 @@ public class UI_cadastro_cliente extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
+                        .addGap(10, 10, 10)
+                        .addComponent(jLabel5)
+                        .addGap(0, 118, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
+                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jButton1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jButton2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton3))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(10, 10, 10)
-                        .addComponent(jLabel5))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(12, Short.MAX_VALUE))
+                        .addComponent(jButton3)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -233,7 +242,9 @@ public class UI_cadastro_cliente extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
        Connection c = null;
-       Statement stmt = null;    
+       Statement stmt = null;
+       ResultSet rs2 = null;
+       boolean idade_inteiro = true, renda_double=true;
        try {
             if( this.jTextField1.getText().equals("") ||
                 this.jTextField2.getText().equals("") ||
@@ -243,15 +254,28 @@ public class UI_cadastro_cliente extends javax.swing.JFrame {
             }
             else{
                 //conecta com o BD
-                this.jLabel6.setText("Processando...");
                 c = DriverManager.getConnection("jdbc:h2://C:\\Users\\Douglas\\Desktop\\Banco de dados\\Simulacao Habitacional","","");
                 stmt = c.createStatement();
-                System.out.println("insert into Cliente values ('"
-                       +this.jTextField1.getText()+"','"
-                       +this.jTextField2.getText()+"','"
-                       +this.jTextField3.getText()+"','"
-                       +this.jTextField4.getText()+"');");
-                stmt.executeUpdate( "insert into Cliente values ('"
+                
+                //checa se CPF, Idade e renda sao inteiros ou double e cpf com 11 algarismos
+                try{ Integer.parseInt(this.jTextField3.getText());}catch(NumberFormatException er){idade_inteiro=false;}
+                try{ Double.parseDouble(this.jTextField4.getText());}catch(NumberFormatException er){renda_double=false;}
+
+                if (this.jTextField1.getText().length()>=12 || !this.jTextField1.getText().matches("^\\d+$")){
+                    this.jLabel6.setText("CPF deve conter 11 dígitos numéricos ou menos.");
+                    System.out.println("ERRO "+this.jTextField1.getText().length()+" "+this.jTextField1.getText());
+                }else{
+                    rs2 = stmt.executeQuery( "SELECT * FROM Cliente where CPF = '"+jTextField1.getText()+"';");  
+                    System.out.println("tamamnho:"+this.jTextField1.getText().length());
+
+                //checa existência do cpf no cadastro, pontos na renda e usa checagem da idade
+                if (rs2.next()){this.jLabel6.setText("CPF já cadastrado.");}else
+                    if(!this.jTextField2.getText().matches("^[\\p{L} .'-]+$")){this.jLabel6.setText("O campo Nome deve conter apenas letras.");}else
+                    if(this.jTextField4.getText().contains(",")){this.jLabel6.setText("Use . no campo renda para definir centavos.");}else
+                        if(!renda_double){this.jLabel6.setText("A renda deve conter um valor numérico.");}else
+                        if(!idade_inteiro || this.jTextField3.getText().contains("-") || !(this.jTextField3.getText().length()<=3)){this.jLabel6.setText("O campo Idade deve conter um número inteiro positivo.");}else{
+                       //executa o SQL se as condições são cumpridas
+                       stmt.executeUpdate( "insert into Cliente values ('"
                        +this.jTextField1.getText()+"','"
                        +this.jTextField2.getText()+"','"
                        +this.jTextField3.getText()+"','"
@@ -262,6 +286,8 @@ public class UI_cadastro_cliente extends javax.swing.JFrame {
                 this.jTextField2.setText("");
                 this.jTextField3.setText("");
                 this.jTextField4.setText("");
+                        }
+                        }
             }
         }
             catch (SQLException ex) {
@@ -293,13 +319,13 @@ public class UI_cadastro_cliente extends javax.swing.JFrame {
                 ResultSet rs = stmt.executeQuery( "SELECT * FROM Cliente;" );
                 boolean existe =false;
                 while(rs.next()){
-                    if(rs.getString(1).equals(jTextField1)){existe=true;}
+                    if(rs.getString(1).equals(jTextField1.getText())){existe=true;}
                 }
                 if(existe){
                 System.out.println("DELETE FROM Cliente WHERE "
-                        + "CPF="+this.jTextField1.getText()+";");
+                        + "CPF='"+this.jTextField1.getText()+"';");
                 stmt.executeUpdate( "DELETE FROM Cliente WHERE "
-                        + "CPF="+this.jTextField1.getText()+";"
+                        + " CPF = '"+this.jTextField1.getText()+"';"
                         );
                 this.jLabel6.setText("Cadastro Excluído");
                 this.jTextField1.setText("");

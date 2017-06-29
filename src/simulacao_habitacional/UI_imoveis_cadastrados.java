@@ -80,14 +80,19 @@ public class UI_imoveis_cadastrados extends javax.swing.JFrame {
                 Class[] types = new Class [] {
                     java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.Float.class
                 };
-
+                public boolean isCellEditable(int row, int col)
+                { return false; }
                 public Class getColumnClass(int columnIndex) {
                     return types [columnIndex];
                 }
             });
         }catch ( Exception e ) {
             System.err.println( e.getClass().getName()+": "+ e.getMessage() );
-            System.exit(0);
+            if(e.getMessage().contains("Database may be already in use")){
+                UI_aviso aviso = new UI_aviso();
+                aviso.setVisible(true);
+                this.getOwner().dispose();
+            }
         }
         jScrollPane1.setViewportView(jTable1);
 
@@ -136,10 +141,10 @@ public class UI_imoveis_cadastrados extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jButton1)
-                        .addGap(18, 18, 18)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jButton2)))
                 .addContainerGap())
         );
@@ -151,12 +156,12 @@ public class UI_imoveis_cadastrados extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2))
+                    .addComponent(jButton2)
+                    .addComponent(jButton1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -205,7 +210,8 @@ public class UI_imoveis_cadastrados extends javax.swing.JFrame {
                     Class[] types = new Class [] {
                         java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.Float.class
                     };
-
+                    public boolean isCellEditable(int row, int col)
+                            { return false; }
                     public Class getColumnClass(int columnIndex) {
                         return types [columnIndex];
                     }
@@ -213,8 +219,11 @@ public class UI_imoveis_cadastrados extends javax.swing.JFrame {
 
                 jLabel2.setText("Excluído com sucesso.");
             }catch (SQLException ex) {
-                Logger.getLogger(Simulacao_habitacional.class.getName()).log(Level.SEVERE, null, ex);
-                jLabel2.setText("Erro ao accessar o Banco de Dados.");
+                //Logger.getLogger(Simulacao_habitacional.class.getName()).log(Level.SEVERE, null, ex);
+                if(ex.getMessage().toString().contains("Referential integrity constraint violation")){
+                    jLabel2.setText("Exclua o histórico do imóvel antes de excluí-lo.");
+                }
+
             }
         
         }else {jLabel2.setText("Selecione um cadastro para Exluir.");}    }//GEN-LAST:event_jButton1ActionPerformed

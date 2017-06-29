@@ -52,6 +52,8 @@ public class UI_cadastro_imovel extends javax.swing.JFrame {
 
         jLabel1.setText("Cadastro de novo Imóvel:");
 
+        jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
         jLabel2.setText("Nome");
 
         jLabel4.setText("Preço");
@@ -62,6 +64,9 @@ public class UI_cadastro_imovel extends javax.swing.JFrame {
             }
         });
 
+        jTextField3.setToolTipText("Use ponto para separar centavos");
+
+        jTextField1.setToolTipText("Nome do Empreendimento");
         jTextField1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTextField1ActionPerformed(evt);
@@ -83,16 +88,16 @@ public class UI_cadastro_imovel extends javax.swing.JFrame {
                             .addComponent(jLabel3))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addComponent(jTextField2)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jTextField3)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
-
-        jPanel1Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jTextField1, jTextField3});
 
         jPanel1Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jLabel2, jLabel3, jLabel4});
 
@@ -121,7 +126,8 @@ public class UI_cadastro_imovel extends javax.swing.JFrame {
             }
         });
 
-        jButton1.setText("Ok");
+        jButton1.setText("Cadastrar");
+        jButton1.setToolTipText("Realizar cadastro");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
@@ -151,36 +157,31 @@ public class UI_cadastro_imovel extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jLabel1)
-                        .addGap(122, 122, 122))))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(67, 67, 67)
-                .addComponent(jButton1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton2)
-                .addGap(0, 0, Short.MAX_VALUE))
-            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel1)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(jButton1)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(jButton2))
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jButton2)
+                    .addComponent(jButton1))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
@@ -198,7 +199,8 @@ public class UI_cadastro_imovel extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
                                          
        Connection c = null;
-       Statement stmt = null;    
+       Statement stmt = null;
+       boolean preco_double = true, unidade_inteiro = true;
        try {
             if( this.jTextField1.getText().equals("") ||
                 this.jTextField2.getText().equals("") ||
@@ -208,13 +210,22 @@ public class UI_cadastro_imovel extends javax.swing.JFrame {
             }
             else{
                 //conecta com o BD
-                this.jLabel5.setText("Processando...");
                 c = DriverManager.getConnection("jdbc:h2://C:\\Users\\Douglas\\Desktop\\Banco de dados\\Simulacao Habitacional","","");
                 stmt = c.createStatement();
-                System.out.println("insert into Imovel values ('"
-                       +this.jTextField1.getText()+"','"
-                       +this.jTextField2.getText()+"','"
-                       +this.jTextField3.getText()+");");
+                
+                //checa se o preço é um valor double
+                try{ Double.parseDouble(this.jTextField3.getText());}catch(NumberFormatException er){preco_double=false;}
+                try{ Integer.parseInt(this.jTextField2.getText());}catch(NumberFormatException er){unidade_inteiro=false;}
+                
+                if(unidade_inteiro){System.out.println("unidade inteiro = '" + this.jTextField2.getText()+"'");}else{System.out.println("unidade errado = '"+ this.jTextField2.getText()+"'");}
+                if(!preco_double){this.jLabel5.setText("O preço deve ser um valor numérico.");}else
+                    if(!unidade_inteiro){this.jLabel5.setText("O campo unidade deve conter um valor numérico inteiro.");}else
+                    if(!this.jTextField1.getText().matches("^[\\p{L} .'-]+$")){this.jLabel5.setText("O campo Nome deve conter apenas letras.");}else{
+                
+                
+                
+                
+                //executa o SQL 
                 stmt.executeUpdate( "insert into Imovel values ('"
                        +this.jTextField1.getText()+"','"
                        +this.jTextField2.getText()+"','"
@@ -224,11 +235,19 @@ public class UI_cadastro_imovel extends javax.swing.JFrame {
                 this.jTextField1.setText("");
                 this.jTextField2.setText("");
                 this.jTextField3.setText("");
+            
+                        }
+            
+            
+            
+            
+            
             }
         }
             catch (SQLException ex) {
                 Logger.getLogger(Simulacao_habitacional.class.getName()).log(Level.SEVERE, null, ex);
                 this.jLabel5.setText("Erro ao conectar o banco.");
+                System.out.println(ex.getMessage());
                 }    }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed

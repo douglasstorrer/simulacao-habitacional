@@ -24,6 +24,7 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
+          <Component id="jPanel1" alignment="0" max="32767" attributes="0"/>
           <Group type="102" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
@@ -32,16 +33,15 @@
                       <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                   </Group>
-                  <Group type="102" alignment="0" attributes="0">
+                  <Group type="102" alignment="1" attributes="0">
                       <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                       <Component id="jButton1" linkSize="1" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                       <Component id="jButton2" linkSize="1" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
-          <Component id="jPanel1" alignment="0" max="32767" attributes="0"/>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
@@ -49,14 +49,14 @@
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
-              <Component id="jScrollPane1" pref="201" max="32767" attributes="0"/>
+              <EmptySpace max="32767" attributes="0"/>
+              <Component id="jScrollPane1" min="-2" pref="198" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="jButton1" linkSize="2" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jButton2" linkSize="2" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jButton1" linkSize="2" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace min="-2" pref="4" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
               <Component id="jPanel1" min="-2" max="-2" attributes="0"/>
           </Group>
       </Group>
@@ -77,8 +77,8 @@
       <SubComponents>
         <Component class="javax.swing.JTable" name="jTable1">
           <Properties>
-            <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor" postCode="}catch ( Exception e ) {&#xa;System.err.println( e.getClass().getName()+&quot;: &quot;+ e.getMessage() );&#xa;System.exit(0);&#xa;}">
-              <Connection code="new javax.swing.table.DefaultTableModel(&#xa;    obj,&#xa;    new String [] {&#xa;        &quot;CPF&quot;, &quot;Nome&quot;, &quot;Idade&quot;, &quot;Renda&quot;&#xa;    }&#xa;) {&#xa;    Class[] types = new Class [] {&#xa;        java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.Float.class&#xa;    };&#xa;&#xa;    public Class getColumnClass(int columnIndex) {&#xa;        return types [columnIndex];&#xa;    }&#xa;}" type="code"/>
+            <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor" postCode="//pega erros de execu&#xe7;&#xe3;o&#xa;}catch ( Exception e ) {&#xa;System.err.println( e.getClass().getName()+&quot;: &quot;+ e.getMessage() );&#xa;if(e.getMessage().contains(&quot;Database may be already in use&quot;)){&#xa;    UI_aviso aviso = new UI_aviso();&#xa;    aviso.setVisible(true);&#xa;    this.getOwner().dispose();&#xa;&#xa;}&#xa;}">
+              <Connection code="new javax.swing.table.DefaultTableModel(&#xa;    obj,&#xa;    new String [] {&#xa;        &quot;CPF&quot;, &quot;Nome&quot;, &quot;Idade&quot;, &quot;Renda&quot;&#xa;    }&#xa;) {&#xa;    Class[] types = new Class [] {&#xa;        java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.Float.class&#xa;    };&#xa;    public boolean isCellEditable(int row, int col)&#xa;    { return false; }&#xa;    public Class getColumnClass(int columnIndex) {&#xa;        return types [columnIndex];&#xa;    }&#xa;}" type="code"/>
             </Property>
             <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
               <TableColumnModel selectionModel="0">
@@ -113,7 +113,7 @@
           </Events>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new javax.swing.JTable()"/>
-            <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="System.out.println(&quot;1&quot;);&#xa;Connection c = null;&#xa;Statement stmt = null;&#xa;try{&#xa;System.out.println(&quot;2&quot;);&#xa;c = DriverManager.getConnection(&quot;jdbc:h2://C:\\Users\\Douglas\\Desktop\\Banco de dados\\Simulacao Habitacional&quot;,&quot;&quot;,&quot;&quot;);&#xa;stmt = c.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,&#xa;        ResultSet.CONCUR_READ_ONLY);&#xa;ResultSet rs = stmt.executeQuery( &quot;SELECT * FROM Cliente;&quot; );&#xa;int rows = 0;&#xa;while(rs.next()){rows++;}&#xa;System.out.println(&quot;3&quot;);&#xa;Object[][] obj = new Object[rows][4];&#xa;rs.first();&#xa;    for(int i=0; i&lt;rows;i++){&#xa;        for (int j=1; j&lt;=4;j++){&#xa;            System.out.println(rs.getObject(j).toString());&#xa;            obj[i][j-1]=rs.getObject(j);&#xa;&#xa;        }            rs.next();&#xa;    }&#xa;System.out.println(&quot;5&quot;);"/>
+            <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="Connection c = null;&#xa;Statement stmt = null;&#xa;try{&#xa;//Conecta ao BD&#xa;c = DriverManager.getConnection(&quot;jdbc:h2://C:\\Users\\Douglas\\Desktop\\Banco de dados\\Simulacao Habitacional&quot;,&quot;&quot;,&quot;&quot;);&#xa;stmt = c.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,&#xa;        ResultSet.CONCUR_READ_ONLY);&#xa;&#xa;//Colhe os dados do BD&#xa;ResultSet rs = stmt.executeQuery( &quot;SELECT * FROM Cliente;&quot; );&#xa;&#xa;//N&#xfa;mero de linhas encontradas&#xa;int rows = 0;&#xa;while(rs.next()){rows++;}&#xa;&#xa;//cria uma matriz de dados para a tabela&#xa;Object[][] obj = new Object[rows][4];&#xa;rs.first();&#xa;    for(int i=0; i&lt;rows;i++){&#xa;        for (int j=1; j&lt;=4;j++){&#xa;            System.out.println(rs.getObject(j).toString());&#xa;            obj[i][j-1]=rs.getObject(j);&#xa;&#xa;        }            rs.next();&#xa;    }&#xa;&#xa;//Modelo da tabela com os dados da matriz"/>
           </AuxValues>
         </Component>
       </SubComponents>
@@ -121,6 +121,7 @@
     <Component class="javax.swing.JButton" name="jButton1">
       <Properties>
         <Property name="text" type="java.lang.String" value="Excluir"/>
+        <Property name="toolTipText" type="java.lang.String" value="Excluir cadastro selecionado"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton1ActionPerformed"/>
